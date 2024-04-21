@@ -1,129 +1,204 @@
 {
-  "openapi": "3.0.1",
+  "openapi": "3.0.0",
   "info": {
-    "title": "OpenAPsI Plant Store",
-    "description": "A sample API that uses a plant store as an example to demonstrate features in the OpenAPI specification",
-    "license": {
-      "name": "MIT"
-    },
+    "title": "Notes API",
+    "description": "API for managing lead notes",
     "version": "1.0.0"
   },
-  "servers": [
-    {
-      "url": "http://sandbox.mintlify.com"
-    }
-  ],
-  "security": [
-    {
-      "bearerAuth": []
-    }
-  ],
   "paths": {
-    "/plants": {
+    "/notes": {
       "get": {
-        "description": "Returns all plants from the system that the user has access to",
+        "summary": "Get all lead notes",
+        "operationId": "getAllNotes",
         "parameters": [
           {
-            "name": "limit",
+            "name": "id_space",
             "in": "query",
-            "description": "The maximum number of results to return",
+            "description": "ID of the space",
+            "required": true,
             "schema": {
-              "type": "integer",
-              "format": "int32"
+              "type": "string"
             }
           }
         ],
         "responses": {
           "200": {
-            "description": "Plant response",
+            "description": "Success",
             "content": {
               "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/Plant"
-                  }
-                }
+                "example": ["note1", "note2"]
               }
             }
           },
-          "400": {
-            "description": "Unexpected error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
+          "500": {
+            "description": "Internal Server Error"
           }
         }
       },
       "post": {
-        "description": "Creates a new plant in the store",
+        "summary": "Create a new lead note",
+        "operationId": "createLeadNote",
         "requestBody": {
-          "description": "Plant to add to the store",
+          "description": "Lead note data",
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/NewPlant"
-              }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "200": {
-            "description": "plant response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Plant"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "unexpected error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
+                "$ref": "#/components/schemas/CreateNoteReqBody"
               }
             }
           }
-        }
-      }
-    },
-    "/plants/{id}": {
-      "delete": {
-        "description": "Deletes a single plant based on the ID supplied",
+        },
         "parameters": [
           {
-            "name": "id",
-            "in": "path",
-            "description": "ID of plant to delete",
+            "name": "id_space",
+            "in": "query",
+            "description": "ID of the space",
             "required": true,
             "schema": {
-              "type": "integer",
-              "format": "int64"
+              "type": "string"
             }
           }
         ],
         "responses": {
-          "204": {
-            "description": "Plant deleted",
-            "content": {}
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "example": "new_note_created"
+              }
+            }
           },
           "400": {
-            "description": "unexpected error",
+            "description": "Bad Request"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/notes/{id_note}": {
+      "get": {
+        "summary": "Get a specific lead note",
+        "operationId": "getLeadNote",
+        "parameters": [
+          {
+            "name": "id_note",
+            "in": "path",
+            "description": "ID of the note",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "example": "specific_note_data"
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      },
+      "put": {
+        "summary": "Update a lead note",
+        "operationId": "updateLeadNote",
+          "parameters": [
+            {
+              "name": "id_note",
+              "in": "path",
+              "description": "ID of the note",
+              "required": true,
+              "schema": {
+                "type": "string"
+              }
+            },
+            {
+              "name": "id_space",
+              "in": "query",
+              "description": "ID of the space",
+              "required": true,
+              "schema": {
+                "type": "string"
+              }
+            }
+          ],
+          "requestBody": {
+            "description": "Content to update",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Error"
+                  "$ref": "#/components/schemas/UpdateNoteReqBody"
                 }
               }
+            }
+          },
+          "responses": {
+            "200": {
+              "description": "Success",
+              "content": {
+                "application/json": {
+                  "example": "note_updated"
+                }
+              }
+            },
+            "400": {
+              "description": "Bad Request"
+            },
+            "500": {
+              "description": "Internal Server Error"
+            }
+          }
+        },
+        "delete": {
+          "summary": "Delete a lead note",
+          "operationId": "deleteLeadNote",
+          "parameters": [
+            {
+              "name": "id_note",
+              "in": "path",
+              "description": "ID of the note",
+              "required": true,
+              "schema": {
+                "type": "string"
+              }
+            },
+            {
+              "name": "id_space",
+              "in": "query",
+              "description": "ID of the space",
+              "required": true,
+              "schema": {
+                "type": "string"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Success",
+              "content": {
+                "application/json": {
+                  "example": "note_deleted"
+                }
+              }
+            },
+            "400": {
+              "description": "Bad Request"
+            },
+            "403": {
+              "description": "Forbidden - Access Denied"
+            },
+            "404": {
+              "description": "Not Found"
+            },
+            "500": {
+              "description": "Internal Server Error"
             }
           }
         }
@@ -132,56 +207,32 @@
   },
   "components": {
     "schemas": {
-      "Plant": {
-        "required": ["name"],
+      "CreateNoteReqBody": {
         "type": "object",
         "properties": {
-          "name": {
-            "description": "The name of the plant",
+          "id_lead": {
             "type": "string"
           },
-          "tag": {
-            "description": "Tag to specify the type",
+          "content": {
+            "type": "string"
+          },
+          "id_parent": {
+            "type": "string"
+          },
+          "thread_id": {
             "type": "string"
           }
-        }
+        },
+        "required": ["id_lead", "content"]
       },
-      "NewPlant": {
-        "allOf": [
-          {
-            "$ref": "#/components/schemas/Plant"
-          },
-          {
-            "required": ["id"],
-            "type": "object",
-            "properties": {
-              "id": {
-                "description": "Identification number of the plant",
-                "type": "integer",
-                "format": "int64"
-              }
-            }
-          }
-        ]
-      },
-      "Error": {
-        "required": ["error", "message"],
+      "UpdateNoteReqBody": {
         "type": "object",
         "properties": {
-          "error": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "message": {
+          "content": {
             "type": "string"
           }
-        }
-      }
-    },
-    "securitySchemes": {
-      "bearerAuth": {
-        "type": "http",
-        "scheme": "bearer"
+        },
+        "required": ["content"]
       }
     }
   }
